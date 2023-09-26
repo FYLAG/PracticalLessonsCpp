@@ -2,6 +2,7 @@
 #define MODEL_CARD_H
 
 #include "model_user.h"
+#include "observer.h"
 
 typedef long double ldouble;
 

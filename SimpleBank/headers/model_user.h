@@ -3,9 +3,11 @@
 
 #include <string>
 
+#include "observer.h"
+
 using std::string;
 
-class User {
+class User : public Observable {
 
 private:
 
