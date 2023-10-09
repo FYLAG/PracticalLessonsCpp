@@ -17,7 +17,7 @@ std::string reverseString() {
 
 int main(int argc, char const *argv[]) {
 
-	std::cout << "Result from function: " << reverseString() << std::endl;
+	std::cout << "Function result: " << reverseString() << std::endl;
 
 	return 0;
 

@@ -11,7 +11,7 @@ float exponentiation(float value, float degree) {
 
 int main(int argc, char const *argv[]) {
 
-	std::cout << "Result from function: " << exponentiation(10, -2) << std::endl;
+	std::cout << "Function result: " << exponentiation(10, -2) << std::endl;
 
 	return 0;
 
