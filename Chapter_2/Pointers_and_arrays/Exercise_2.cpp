@@ -37,6 +37,7 @@ int main(int argc, char const *argv[]) {
 
 	}
 
+	delete arrElement;
 	delete [] arr;
 
 	return 0;
