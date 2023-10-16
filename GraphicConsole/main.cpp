@@ -4,11 +4,37 @@
 #include <chrono>
 #include <cmath>
 
-void outAnimationCircle(const int _x, const int _y, const float aspectRatio, const float aspectChar) {
+#include "headers/vector3.h"
+#include "headers/sphere.h"
 
-	char* screen = new char[_x * _y + 1];
+void setSizeWindow(int const &width, int const &height) {
 
-	int frame = 0;
+	_COORD coord;
+
+	coord.X = width;
+	coord.Y = height;
+
+	_SMALL_RECT rect;
+
+	rect.Top = 0;
+	rect.Left = 0;
+	rect.Bottom = height - 1;
+	rect.Right = width - 1;
+
+	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleScreenBufferSize(hStdOut, coord);
+	SetConsoleWindowInfo(hStdOut, TRUE, &rect);
+
+}
+
+void outAnimationCircle(int const &_x, int const &_y, float const &aspectRatio, float const &aspectChar) {
+
+	char* screenBuffer = new char[_x * _y + 1];
+
+	unsigned char arrGradientChars[] = " .,:!/r(l1Z4H9W8$@";
+	unsigned short arrGradientSize = std::size(arrGradientChars) - 2;
+
+	unsigned short frame = 0;
 
 	while (true) {
 
@@ -18,34 +44,41 @@ void outAnimationCircle(const int _x, const int _y, const float aspectRatio, con
 
 			for (int x = 0; x < _x; x++) {
 
-				char consoleChar = ' ';
+				Vector3 uv = Vector3(static_cast<float>(x) - _x / 2.0f - 1.0f, static_cast<float>(y) - _y / 2.0f - 1.0f, 0);
+				uv.y *= aspectChar * aspectRatio;
 
-				float xNew = (static_cast<float>(x) / _x * 2 - 1) * aspectRatio * aspectChar;
-				float yNew = static_cast<float>(y) / _y * 2 - 1;
+				Vector3 camera = Vector3(0, 0, 0);
+				Vector3 cameraRay = Vector3(uv.x, uv.y, 10);
 
-				xNew += std::sin(frame * 0.001);
+				Sphere objectSphere = Sphere(Vector3(0, 0, 3), 10.0f);
 
-				if (xNew * xNew + yNew * yNew < 0.5f) {
+				objectSphere.x += std::sin(frame * 0.025f) * 30.0f;
+				objectSphere.y += std::cos(frame * 0.025f) * 30.0f;
 
-					consoleChar = '@';
+				float beamObstacle = objectSphere.checkHitBeam(cameraRay);
 
+				int colorPixel = 0;
+
+				if (beamObstacle > 0) {
+					colorPixel = arrGradientSize;
 				}
 
-				screen[i++] = consoleChar;
+				screenBuffer[i++] = arrGradientChars[colorPixel];
 
 			}
 
 		}
 
-		screen[_x * _y] = '\0';
+		screenBuffer[_x * _y] = '\0';
 
 		system("cls");
+		std::cout << screenBuffer;
 
-		std::cout << screen;
-
+		// getchar();
+		
 		frame++;
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
 	}
 
@@ -53,18 +86,15 @@ void outAnimationCircle(const int _x, const int _y, const float aspectRatio, con
 
 int main(int argc, char const *argv[]) {
 
-	const int winSizeX = 160;
-	const int winSizeY = 45;
+	const int winWidth = 240;
+	const int winHeight = 60;
 
-	const float aspectRatio = static_cast<float>(winSizeX) / winSizeY;
+	const float aspectRatio = static_cast<float>(winWidth) / winHeight;
 	const float aspectChar = 8.0f / 16.0f;
 
-	HWND hWindowConsole = GetConsoleWindow();
-	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleScreenBufferSize(hStdOut, {winSizeX, winSizeY});
-	MoveWindow(hWindowConsole, 100, 100, winSizeX * 8, winSizeY * 16, TRUE);
+	setSizeWindow(winWidth, winHeight);
 
-	std::thread newThread(outAnimationCircle, winSizeX, winSizeY, aspectRatio, aspectChar);
+	std::thread newThread(outAnimationCircle, winWidth, winHeight, aspectRatio, aspectChar);
 	newThread.detach();
 
 	getchar();
