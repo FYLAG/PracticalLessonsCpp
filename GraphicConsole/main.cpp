@@ -1,5 +1,6 @@
 #include <iostream>
 #include <Windows.h>
+#include <vector>
 #include <thread>
 #include <chrono>
 #include <cmath>
@@ -31,14 +32,22 @@ void outAnimationCircle(int const &_x, int const &_y, float const &aspectRatio, 
 
 	char* screenBuffer = new char[_x * _y + 1];
 
-	unsigned char arrGradientChars[] = " .,:!/r(l1Z4H9W8$@";
-	unsigned short arrGradientSize = std::size(arrGradientChars) - 2;
+	unsigned char arrGradientChars[] = " .,:!/r(l1ZH9W8$@";
+	unsigned short arrGradientSize = std::size(arrGradientChars) - 1;
 
 	unsigned short frame = 0;
+
+	std::vector<float> arrBeamObstacle;
+	std::vector<int> arrNumBeamObstacle;
+
+	screenBuffer[_x * _y] = '\0';
 
 	while (true) {
 
 		int i = 0;
+
+		float maxElement = 0,
+			  minElement = 0;
 
 		for (int y = 0; y < _y; y++) {
 
@@ -50,35 +59,66 @@ void outAnimationCircle(int const &_x, int const &_y, float const &aspectRatio, 
 				Vector3 camera = Vector3(0, 0, 0);
 				Vector3 cameraRay = Vector3(uv.x, uv.y, 10);
 
-				Sphere objectSphere = Sphere(Vector3(0, 0, 3), 10.0f);
+				Sphere objectSphere = Sphere(Vector3(0, 0, 3), 20.0f);	// TODO: camera direction must be taken into account
 
-				objectSphere.x += std::sin(frame * 0.025f) * 30.0f;
-				objectSphere.y += std::cos(frame * 0.025f) * 30.0f;
+				objectSphere.x += std::sin(frame * 0.025f) * 25.0f;
+				objectSphere.y += std::cos(frame * 0.025f) * 25.0f;
 
 				float beamObstacle = objectSphere.checkHitBeam(cameraRay);
 
-				int colorPixel = 0;
-
 				if (beamObstacle > 0) {
-					colorPixel = arrGradientSize;
+
+					if (beamObstacle > maxElement) {
+						maxElement = beamObstacle;
+					}
+
+					if (minElement == 0) {
+						minElement = beamObstacle;
+					} else {
+						if (beamObstacle < minElement) {
+							minElement = beamObstacle;
+						}
+					}
+
+					arrBeamObstacle.push_back(beamObstacle);
+					arrNumBeamObstacle.push_back(i);
 				}
 
-				screenBuffer[i++] = arrGradientChars[colorPixel];
+				screenBuffer[i++] = ' ';
 
 			}
 
 		}
 
-		screenBuffer[_x * _y] = '\0';
+		float step = (maxElement - minElement) / (arrGradientSize - 1);
+
+		for (int j = 0; j < arrBeamObstacle.size(); j++) {
+
+			int shade = 0;
+
+			for (int k = 0; k < arrGradientSize; k++) {
+
+				if (arrBeamObstacle[j] > step * k) {
+					shade = k;
+				} else {
+					break;
+				}
+
+			}
+
+			screenBuffer[arrNumBeamObstacle[j]] = arrGradientChars[shade];
+
+		}
+
+		arrBeamObstacle.erase(arrBeamObstacle.cbegin(), arrBeamObstacle.cend());
+		arrNumBeamObstacle.erase(arrNumBeamObstacle.cbegin(), arrNumBeamObstacle.cend());
 
 		system("cls");
 		std::cout << screenBuffer;
 
-		// getchar();
-		
 		frame++;
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		std::this_thread::sleep_for(std::chrono::milliseconds(3));
 
 	}
 
