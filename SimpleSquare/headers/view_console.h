@@ -14,7 +14,7 @@ public:
 
     ViewConsole(Square *_object);
 
-    virtual void update();
+    void update() override;
 
 };
 

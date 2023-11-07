@@ -1,9 +1,5 @@
 #include "headers/observer.h"
 
-void Observer::update() {
-
-}
-
 void Observable::addObserver(Observer *_observer) {
 
 	observers.push_back(_observer);		// Adding a new element to the array

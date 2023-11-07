@@ -7,7 +7,7 @@ class Observer {
 
 public:
 
-	virtual void update();
+	virtual void update() = 0;
 
 };
 

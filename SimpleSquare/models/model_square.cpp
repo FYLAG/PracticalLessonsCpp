@@ -4,33 +4,33 @@ Square::Square() : sideA(0), sideB(0) {
 
 }
 
-Square::Square(int _sideA, int _sideB) {
+Square::Square(uint _sideA, uint _sideB) {
 
 	this->sideA = _sideA;
 	this->sideB = _sideB;
 
 }
 
-void Square::setSideA(int _var) {
+void Square::setSideA(uint _var) {
 	this->sideA = _var;
 }
 
-int Square::getSideA() {
+uint Square::getSideA() {
 	return this->sideA;
 }
 
-void Square::setSideB(int _var) {
+void Square::setSideB(uint _var) {
 	this->sideB = _var;
 }
 
-int Square::getSideB() {
+uint Square::getSideB() {
 	return this->sideB;
 }
 
 ullong Square::getSquare() {
 
-	int a = this->sideA,
-		b = this->sideB;
+	uint a = this->sideA,
+		 b = this->sideB;
 
 	ullong result = a * b;
 

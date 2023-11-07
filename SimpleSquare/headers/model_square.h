@@ -6,26 +6,27 @@
 #include "observer.h"
 
 typedef unsigned long long ullong;
+typedef unsigned int uint;
 
 class Square : public Observable {
 
 private:
 
-	int sideA, sideB;
+	uint sideA, sideB;
 
 public:
 
 	Square();
 
-	Square(int _sideA, int _sideB);
+	Square(uint _sideA, uint _sideB);
 
-	void setSideA(int _var);
+	void setSideA(uint _var);
 
-	int getSideA();
+	uint getSideA();
 
-	void setSideB(int _var);
+	void setSideB(uint _var);
 
-	int getSideB();
+	uint getSideB();
 
 	ullong getSquare();
 

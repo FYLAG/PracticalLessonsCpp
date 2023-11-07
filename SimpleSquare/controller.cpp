@@ -8,7 +8,7 @@ Controller::Controller(Square *_object) {
 
 void Controller::run() {
 
-	int scanVarFirst, scanVarSecond;
+	uint scanVarFirst, scanVarSecond;
 
 	bool isZero = false;
 
@@ -19,13 +19,13 @@ void Controller::run() {
 			scanf("%d", &scanVarFirst);			// Waiting for and reading user input
 			scanf("%d", &scanVarSecond);
 
-			object->setSideA(scanVarFirst);		// The values read from the input stream are assigned to the object
-			object->setSideB(scanVarSecond);	// through the methods implemented for this purpose
+			this->object->setSideA(scanVarFirst);		// The values read from the input stream are assigned to the object
+			this->object->setSideB(scanVarSecond);	// through the methods implemented for this purpose
 
 			isZero = scanVarFirst == 0 || scanVarSecond == 0;
 
 			if (!isZero) { // If the numbers are not zero, the view is updated through the object method
-				object->updateObserver();
+				this->object->updateObserver();
 			}
 
 		} while (!isZero); // Continue the loop if the numbers are not zero
